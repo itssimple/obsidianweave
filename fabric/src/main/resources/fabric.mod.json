@@ -26,7 +26,6 @@
     "fabricloader": ">=${fabric_loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}",
-    "java": ">=${java_version}",
-    "cloth-config":">=${cloth_config_version}"
+    "java": ">=${java_version}"
   }
 }
