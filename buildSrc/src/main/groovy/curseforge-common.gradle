@@ -1,0 +1,57 @@
+tasks.register('copyToCFProfiles') {
+    group = "curseforge"
+    description = "Copy the mod to the CurseForge profiles directory"
+
+    def modules = (project.findProperty("cf.modules") ?: "").split(';').findAll { it }
+
+    dependsOn modules.collect { ":${it}:build" }
+
+    def inputToOutputs = modules.collectEntries { moduleKey ->
+        def outputs = (project.findProperty("cf.moduleoutput.${moduleKey}") ?: "").split(';').findAll { it }
+        return [moduleKey, outputs]
+    }
+
+    doLast {
+        inputToOutputs.each { module, outputs ->
+            def moduleProject = project(":${module}")
+            def buildLibsDir = new File(moduleProject.buildDir, "libs")
+
+            println "📦 Looking in ${buildLibsDir} for module '${module}'"
+
+            def jarFile = buildLibsDir.listFiles(new FilenameFilter() {
+                boolean accept(File dir, String name) {
+                    return name.startsWith("${mod_id}-") &&
+                            name.endsWith(".jar") &&
+                            !name.contains("-dev") &&
+                            !name.contains("-sources") &&
+                            !name.contains("-javadoc")
+                }
+            })?.first()
+
+            outputs.each { output ->
+                def target = file(output)
+                if (!target.exists()) {
+                    target.mkdirs()
+                }
+
+                target.listFiles(new FilenameFilter() {
+                    boolean accept(File dir, String name) {
+                        return name.startsWith("${mod_id}-") && name.endsWith(".jar")
+                    }
+                })?.each { oldFile ->
+                    if (oldFile.delete()) {
+                        println "🗑️ Deleted old mod file: ${oldFile}"
+                    } else {
+                        println "⚠️ Failed to delete: ${oldFile}"
+                    }
+                }
+
+                copy {
+                    from jarFile
+                    into target
+                }
+            }
+        }
+    }
+}
+

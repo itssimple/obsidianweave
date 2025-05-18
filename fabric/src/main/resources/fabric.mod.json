@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": [ "${mod_author}" ],
+  "contact": {
+    "homepage": "",
+    "sources": "https://github.com/itssimple/obsidianweave",
+    "issues": "https://github.com/itssimple/.mod-issue-tracker"
+  },
+
+  "license": "${license}",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": { "main": [ "se.itssimple.obsidianweave.ModFabric" ] },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}-fabric.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "java": ">=${java_version}",
+    "cloth-config":">=${cloth_config_version}"
+  }
+}
