@@ -120,7 +120,8 @@ processResources {
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifactId base.archivesName.get()
+            artifactId = "${mod_id}-${project.name}"
+            version = "${minecraft_version}-${version}"
             from components.java
         }
     }
