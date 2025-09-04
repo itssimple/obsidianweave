@@ -5,6 +5,7 @@ import se.itssimple.obsidianweave.data.ConfigEntry;
 import se.itssimple.obsidianweave.data.ConfigHolder;
 import se.itssimple.obsidianweave.data.Constants;
 import se.itssimple.obsidianweave.platform.IPlatformConfigHelper;
+import se.itssimple.obsidianweave.services.Services;
 import se.itssimple.obsidianweave.util.Reference;
 
 import java.util.HashMap;
@@ -15,7 +16,6 @@ import java.util.function.Consumer;
 
 public class ModCommon {
 	private static final Map<String, ConfigHolder> REGISTERED_CONFIGS = new HashMap<>();
-	private static IPlatformConfigHelper platformConfigHelper;
 
 	public static Boolean CONFIG_DEBUG_LOGGING = true;
 
@@ -25,22 +25,7 @@ public class ModCommon {
 	}
 
 	private static void load() {
-		platformConfigHelper = ServiceLoader.load(IPlatformConfigHelper.class).findFirst().orElseThrow(() -> {
-			Constants.LOG.error("No platform config helper found!");
-			return new RuntimeException("No platform config helper found!");
-		});
-
-		platformConfigHelper.initialize(Reference.MOD_ID, Reference.MOD_ID);
-	}
-
-	public static IPlatformConfigHelper getPlatformConfigHelper()
-	{
-		if(platformConfigHelper == null) {
-			Constants.LOG.error("Platform config helper is not initialized!");
-			throw new IllegalStateException("Platform config helper is not initialized!");
-		} else {
-			return platformConfigHelper;
-		}
+        Services.PLATFORMHELPER.initialize(Reference.MOD_ID, Reference.MOD_ID);
 	}
 
 	public static ConfigHolder registerConfig(String modId, Consumer<ConfigBuilder> configurator) {
@@ -55,8 +40,8 @@ public class ModCommon {
 
 		ConfigHolder holder = new ConfigHolder(modId, builder.getEntries());
 
-		platformConfigHelper.register(holder);
-		platformConfigHelper.load(holder);
+        Services.PLATFORMHELPER.register(holder);
+        Services.PLATFORMHELPER.load(holder);
 
 		REGISTERED_CONFIGS.put(modId, holder);
 
@@ -73,7 +58,7 @@ public class ModCommon {
 	}
 
 	public static void saveAllModsConfigs() {
-		REGISTERED_CONFIGS.values().forEach(platformConfigHelper::save);
+		REGISTERED_CONFIGS.values().forEach(Services.PLATFORMHELPER::save);
 		Constants.LOG.info("Saved all mods configs");
 	}
 }

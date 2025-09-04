@@ -1,6 +1,7 @@
 package se.itssimple.obsidianweave.data;
 
 import se.itssimple.obsidianweave.ModCommon;
+import se.itssimple.obsidianweave.services.Services;
 
 import java.util.function.Supplier;
 
@@ -57,11 +58,11 @@ public class ConfigEntry<T> {
     }
 
     public T getValue() {
-        return ModCommon.getPlatformConfigHelper().getValue(this);
+        return Services.PLATFORMHELPER.getValue(this);
     }
 
     public void setValue(T value) {
-        ModCommon.getPlatformConfigHelper().setValue(this, value);
+        Services.PLATFORMHELPER.setValue(this, value);
     }
 
     public T getInternalCachedValue() {

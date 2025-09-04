@@ -8,7 +8,6 @@ public class ModFabric implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModCommon.init();
-
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> ModCommon.saveAllModsConfigs());
 	}
 }
