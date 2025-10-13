@@ -14,10 +14,24 @@ import se.itssimple.obsidianweave.platform.IPlatformConfigHelper;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Forge-specific implementation of platform config helper for Obsidian Weave.
+ * Handles registration and management of mod configuration using Forge's config system.
+ */
 public class ForgePlatformHelper implements IPlatformConfigHelper {
+    /**
+     * Maps mod IDs to their config holders.
+     */
     private static final Map<String, ConfigHolder> modIdToHolderMap = new HashMap<>();
+    /**
+     * Maps mod IDs to their Forge config specs.
+     */
     private static final Map<String, ForgeConfigSpec> modIdToSpecMap = new HashMap<>();
 
+    /**
+     * Registers a config holder and builds its Forge config spec.
+     * @param holder The config holder to register.
+     */
     @SuppressWarnings("unchecked")
     @Override
     public void register(ConfigHolder holder) {
@@ -58,6 +72,10 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
         }
     }
 
+    /**
+     * Loads the configuration values for the given holder from Forge.
+     * @param holder The config holder to load values for.
+     */
     @Override
     public void load(ConfigHolder holder) {
         syncValuesFromForge(holder);
@@ -80,6 +98,10 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
         entry.setInternalCachedValue(value);
     }
 
+    /**
+     * Saves the configuration for the given holder.
+     * @param holder The config holder to save.
+     */
     @Override
     public void save(ConfigHolder holder) {
         ForgeConfigSpec spec = modIdToSpecMap.get(holder.getModId());
@@ -88,6 +110,12 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
         }
     }
 
+    /**
+     * Gets the value of a config entry, using the platform binding if available.
+     * @param entry The config entry to get the value from.
+     * @param <T> The type of the config entry value.
+     * @return The value of the config entry.
+     */
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getValue(ConfigEntry<T> entry) {
@@ -98,6 +126,12 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
         return entry.getDefaultValue();
     }
 
+    /**
+     * Sets the value of a config entry, updating the platform binding if necessary.
+     * @param entry The config entry to set the value for.
+     * @param value The value to set.
+     * @param <T> The type of the config entry value.
+     */
     @SuppressWarnings("unchecked")
     @Override
     public <T> void setValue(ConfigEntry<T> entry, T value) {
@@ -107,6 +141,10 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
         }
     }
 
+    /**
+     * Handles mod config events, syncing values for the affected mod.
+     * @param event The config event to handle.
+     */
     public static void onModConfigEvent(final ModConfigEvent event) {
         ModConfig config = event.getConfig();
         for (Map.Entry<String, ForgeConfigSpec> entry : modIdToSpecMap.entrySet()) {

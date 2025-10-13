@@ -15,12 +15,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Fabric-specific implementation of platform config helper for Obsidian Weave.
+ * Handles loading and saving mod configuration using JSON files in the Fabric environment.
+ */
 public class FabricPlatformHelper implements IPlatformConfigHelper {
+    /**
+     * Gson instance for config serialization.
+     */
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .create();
 
+    /**
+     * Gets the config file path for the given config holder.
+     * @param holder The config holder.
+     * @return The path to the config file.
+     */
     private Path getConfigFilePath(ConfigHolder holder) {
         Path configRootPath = FabricLoader.getInstance().getConfigDir().resolve(holder.getModId());
         try {
@@ -33,6 +45,11 @@ public class FabricPlatformHelper implements IPlatformConfigHelper {
         return configRootPath.resolve(holder.getModId() + ".json");
     }
 
+    /**
+     * Finds the mod ID for a given config entry.
+     * @param entry The config entry.
+     * @return The mod ID, or null if not found.
+     */
     private String findModIdForEntry(ConfigEntry<?> entry) {
         for (ConfigHolder holder : ModCommon.getAllConfigs().values()) {
             if (holder.getEntry(entry.getKey()).isPresent()) {
@@ -43,9 +60,17 @@ public class FabricPlatformHelper implements IPlatformConfigHelper {
         return null;
     }
 
+    /**
+     * Registers a config holder. No-op in Fabric.
+     * @param holder The config holder.
+     */
     @Override
     public void register(ConfigHolder holder) { /* No-op in Fabric */ }
 
+    /**
+     * Loads the config for the given holder from disk.
+     * @param holder The config holder.
+     */
     @Override
     public void load(ConfigHolder holder) {
         if(ModCommon.CONFIG_DEBUG_LOGGING) {
@@ -99,6 +124,10 @@ public class FabricPlatformHelper implements IPlatformConfigHelper {
         }
     }
 
+    /**
+     * Saves the config for the given holder to disk.
+     * @param holder The config holder.
+     */
     @Override
     public void save(ConfigHolder holder) {
         Path configPath = getConfigFilePath(holder);

@@ -10,21 +10,36 @@ import se.itssimple.obsidianweave.services.Services;
 import se.itssimple.obsidianweave.util.Reference;
 import net.minecraftforge.fml.common.Mod;
 
+/**
+ * The main Forge mod class for Obsidian Weave.
+ * Handles mod initialization and server events for the Forge platform.
+ */
 @Mod(Reference.MOD_ID)
 public class ModForge {
 
-	public ModForge() {
+    /**
+     * Constructs the Forge mod and registers event listeners.
+     */
+    public ModForge() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::loadComplete);
         eventBus.addListener(ForgePlatformHelper::onModConfigEvent);
-	}
+    }
 
-	private void loadComplete(final FMLLoadCompleteEvent event) {
-		ModCommon.init();
-	}
+    /**
+     * Called when Forge has completed loading mods.
+     * @param event The load complete event.
+     */
+    private void loadComplete(final FMLLoadCompleteEvent event) {
+        ModCommon.init();
+    }
 
-	@SubscribeEvent
-	public static void onServerStopping(ServerStoppingEvent event) {
-		ModCommon.saveAllModsConfigs();
-	}
+    /**
+     * Called when the server is stopping. Saves all mod configs.
+     * @param event The server stopping event.
+     */
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+        ModCommon.saveAllModsConfigs();
+    }
 }
