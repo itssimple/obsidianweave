@@ -21,23 +21,15 @@ public class FabricPlatformHelper implements IPlatformConfigHelper {
             .disableHtmlEscaping()
             .create();
 
-    private Path configRootPath;
-
-    @Override
-    public void initialize(String modId, String configSubDirectory) {
-        if(ModCommon.CONFIG_DEBUG_LOGGING) {
-            Constants.LOG.info("Initializing Fabric config for mod {}", modId);
-        }
-        this.configRootPath = FabricLoader.getInstance().getConfigDir().resolve(configSubDirectory);
+    private Path getConfigFilePath(ConfigHolder holder) {
+        Path configRootPath = FabricLoader.getInstance().getConfigDir().resolve(holder.getModId());
         try {
             Files.createDirectories(configRootPath);
             Constants.LOG.info("Config directory: {}", configRootPath);
         } catch (IOException e) {
             Constants.LOG.error("Failed to create config directory: {}", configRootPath, e);
         }
-    }
 
-    private Path getConfigFilePath(ConfigHolder holder) {
         return configRootPath.resolve(holder.getModId() + ".json");
     }
 
@@ -145,9 +137,8 @@ public class FabricPlatformHelper implements IPlatformConfigHelper {
         setValueUnsafe(rawEntry, rawEntry.getDefaultValue());
     }
 
-    @Override
     public <T> T getValue(ConfigEntry<T> entry) {
-        return entry.getValue();
+        return entry.getInternalCachedValue();
     }
 
     @Override

@@ -18,14 +18,6 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
     private static final Map<String, ConfigHolder> modIdToHolderMap = new HashMap<>();
     private static final Map<String, ForgeConfigSpec> modIdToSpecMap = new HashMap<>();
 
-    @Override
-    public void initialize(String modId, String configSubDirectory) {
-        /* Forge handles this */
-        if(ModCommon.CONFIG_DEBUG_LOGGING) {
-            Constants.LOG.info("Initializing Forge config for mod {}", modId);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public void register(ConfigHolder holder) {

@@ -21,11 +21,6 @@ public class ModCommon {
 
 	public static void init() {
 		Constants.LOG.info("Loading {} (ID: {}), version {}", Reference.NAME, Reference.MOD_ID, Reference.VERSION);
-		load();
-	}
-
-	private static void load() {
-        Services.PLATFORMHELPER.initialize(Reference.MOD_ID, Reference.MOD_ID);
 	}
 
 	public static ConfigHolder registerConfig(String modId, Consumer<ConfigBuilder> configurator) {
