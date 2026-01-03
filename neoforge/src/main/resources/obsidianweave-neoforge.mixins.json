@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "se.itssimple.obsidianweave.fabric.mixin",
+  "package": "se.itssimple.obsidianweave.neoforge.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_${java_version}",
   "mixins": [

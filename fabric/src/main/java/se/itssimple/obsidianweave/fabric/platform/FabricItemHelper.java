@@ -36,7 +36,7 @@ public class FabricItemHelper implements IPlatformItemHelper {
     @Override
     public <T extends Item> Supplier<T> registerItem(String name, Supplier<T> itemSupplier)
     {
-        T item = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modId, name), itemSupplier.get());
+        T item = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modId, name), itemSupplier.get());
         return () -> item;
     }
 }

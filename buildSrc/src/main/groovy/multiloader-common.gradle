@@ -90,23 +90,25 @@ processResources {
             'minecraft_version_range'      : minecraft_version_range,
             'fabric_version'               : fabric_version,
             'fabric_loader_version'        : fabric_loader_version,
-            'cloth_config_version'         : cloth_config_version,
             'mod_name'                     : mod_name,
             'mod_author'                   : mod_author,
             'mod_id'                       : mod_id,
             'license'                      : license,
             'description'                  : project.description,
-            "forge_version": forge_version,
-            "forge_loader_version_range": forge_loader_version_range,
+            "forge_version"                : forge_version,
+            "forge_loader_version_range"   : forge_loader_version_range,
             'credits'                      : credits,
-            'java_version'                 : java_version
+            'java_version'                 : java_version,
+            'neoforge_version'             : neoforge_version,
+            'loader_version'               : loader_version,
+            'issue_tracker_url'            : issue_tracker_url
     ]
 
     var jsonExpandProps = expandProps.collectEntries {
         key, value -> [(key): value instanceof String ? value.replace("\n", "\\\\n") : value]
     }
 
-    filesMatching(['META-INF/mods.toml']) {
+    filesMatching(['META-INF/mods.toml', 'META-INF/neoforge.mods.toml']) {
         expand expandProps
     }
 

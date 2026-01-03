@@ -1,16 +1,33 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        mavenCentral()
+
         maven { url = 'https://maven.parchmentmc.org' }
 
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Fabric'
+                    url = uri('https://maven.fabricmc.net')
+                }
+            }
+            filter {
+                includeGroup('net.fabricmc')
+                includeGroup('fabric-loom')
+            }
         }
 
-        maven {
-            name = 'Sponge Snapshots'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Sponge'
+                    url = uri('https://repo.spongepowered.org/repository/maven-public')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups("org.spongepowered")
+            }
         }
 
         maven {
@@ -28,16 +45,26 @@ pluginManagement {
             url = 'https://server.bbkr.space/artifactory/libs-release/'
         }
 
-        mavenCentral()
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Forge'
+                    url = uri('https://maven.minecraftforge.net')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups('net.minecraftforge')
+            }
+        }
     }
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
-rootProject.name = 'Obsidian-Weave-1.20.1'
+rootProject.name = 'Obsidian-Weave-1.21.1'
 include("common")
 include("fabric")
 include("forge")
-
+include 'neoforge'

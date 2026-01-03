@@ -1,6 +1,5 @@
 plugins {
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
-    id 'fabric-loom' version '1.9-SNAPSHOT' apply(false)
-    id 'net.neoforged.moddev.legacyforge' version '2.0.77' apply(false)
-    id 'curseforge-common'
+    id 'fabric-loom' version '1.9-SNAPSHOT' apply false
+    id 'net.neoforged.moddev' version '2.0.49-beta' apply false
 }

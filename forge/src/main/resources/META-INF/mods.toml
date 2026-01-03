@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="${forge_loader_version_range}"
 license="${license}"
-issueTrackerURL="https://github.com/itssimple/.mod-issue-tracker"
+issueTrackerURL="${issue_tracker_url}"
 logoFile="icon.png"
 
 [[mods]]
@@ -13,9 +13,9 @@ authors="$mod_author"
 description='''${description}'''
 
 [[dependencies.${mod_id}]]
-    modId="minecraft"
-    type="required"
-    mandatory=true
-    versionRange="${minecraft_version_range}"
-    ordering="NONE"
-    side="SERVER"
+modId="minecraft"
+type="required"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="SERVER"
