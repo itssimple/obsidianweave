@@ -84,6 +84,10 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
     @SuppressWarnings("unchecked")
     private static <T> void syncValuesFromForge(ConfigHolder holder)
     {
+        ForgeConfigSpec spec = modIdToSpecMap.get(holder.getModId());
+        if(!spec.isLoaded())
+            return;
+
         for(ConfigEntry<?> entry : holder.getAllEntries()) {
            if(entry.getPlatformBinding() instanceof ForgeConfigSpec.ConfigValue) {
                var value = ((ForgeConfigSpec.ConfigValue<T>) entry.getPlatformBinding()).get();
