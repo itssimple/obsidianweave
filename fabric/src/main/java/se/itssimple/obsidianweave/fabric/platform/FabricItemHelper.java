@@ -1,7 +1,6 @@
 package se.itssimple.obsidianweave.fabric.platform;
 
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import se.itssimple.obsidianweave.platform.IPlatformItemHelper;
@@ -36,7 +35,7 @@ public class FabricItemHelper implements IPlatformItemHelper {
     @Override
     public <T extends Item> Supplier<T> registerItem(String name, Supplier<T> itemSupplier)
     {
-        T item = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modId, name), itemSupplier.get());
+        T item = Registry.register(Registry.ITEM, new ResourceLocation(modId, name), itemSupplier.get());
         return () -> item;
     }
 }
