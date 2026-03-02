@@ -123,11 +123,7 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getValue(ConfigEntry<T> entry) {
-        if(entry.getPlatformBinding() instanceof ForgeConfigSpec.ConfigValue) {
-            return ((ForgeConfigSpec.ConfigValue<T>) entry.getPlatformBinding()).get();
-        }
-
-        return entry.getDefaultValue();
+        return entry.getInternalCachedValue();
     }
 
     /**
