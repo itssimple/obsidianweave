@@ -120,14 +120,9 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
      * @param <T> The type of the config entry value.
      * @return The value of the config entry.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getValue(ConfigEntry<T> entry) {
-        if(entry.getPlatformBinding() instanceof ForgeConfigSpec.ConfigValue) {
-            return ((ForgeConfigSpec.ConfigValue<T>) entry.getPlatformBinding()).get();
-        }
-
-        return entry.getDefaultValue();
+        return entry.getInternalCachedValue();
     }
 
     /**

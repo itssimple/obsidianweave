@@ -121,11 +121,7 @@ public class NeoForgePlatformHelper implements IPlatformConfigHelper {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getValue(ConfigEntry<T> entry) {
-        if(entry.getPlatformBinding() instanceof ModConfigSpec.ConfigValue) {
-            return ((ModConfigSpec.ConfigValue<T>) entry.getPlatformBinding()).get();
-        }
-
-        return entry.getDefaultValue();
+        return entry.getInternalCachedValue();
     }
 
     /**
