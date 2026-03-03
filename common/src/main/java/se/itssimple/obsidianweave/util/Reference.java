@@ -10,7 +10,7 @@ public class Reference {
     /** The display name of the mod. */
     public static final String NAME = "Obsidian Weave";
     /** The current version of the mod. */
-    public static final String VERSION = "1.1.2";
+    public static final String VERSION = "1.1.4";
     /** The accepted Minecraft versions for this mod. */
-    public static final String ACCEPTED_VERSIONS = "[1.20.1]";
+    public static final String ACCEPTED_VERSIONS = "[1.21.1]";
 }

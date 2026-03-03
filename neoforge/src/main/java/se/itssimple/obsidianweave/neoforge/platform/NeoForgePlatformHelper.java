@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Forge-specific implementation of platform config helper for Obsidian Weave.
- * Handles registration and management of mod configuration using Forge's config system.
+ * NeoForge-specific implementation of platform config helper for Obsidian Weave.
+ * Handles registration and management of mod configuration using NeoForge's config system.
  */
 public class NeoForgePlatformHelper implements IPlatformConfigHelper {
     /**
@@ -23,7 +23,7 @@ public class NeoForgePlatformHelper implements IPlatformConfigHelper {
      */
     private static final Map<String, ConfigHolder> modIdToHolderMap = new HashMap<>();
     /**
-     * Maps mod IDs to their Forge config specs.
+     * Maps mod IDs to their NeoForge config specs.
      */
     private static final Map<String, ModConfigSpec> modIdToSpecMap = new HashMap<>();
     /**
@@ -82,6 +82,10 @@ public class NeoForgePlatformHelper implements IPlatformConfigHelper {
     @SuppressWarnings("unchecked")
     private static <T> void syncValuesFromForge(ConfigHolder holder)
     {
+        ModConfigSpec spec = modIdToSpecMap.get(holder.getModId());
+        if(!spec.isLoaded())
+            return;
+
         for(ConfigEntry<?> entry : holder.getAllEntries()) {
             if(entry.getPlatformBinding() instanceof ModConfigSpec.ConfigValue) {
                 var value = ((ModConfigSpec.ConfigValue<T>) entry.getPlatformBinding()).get();
@@ -149,7 +153,7 @@ public class NeoForgePlatformHelper implements IPlatformConfigHelper {
             String modId = entry.getKey();
             ModConfigSpec spec = entry.getValue();
             if (spec == config.getSpec()) {
-                Constants.LOG.debug("Forge config event for {}: {}, syncing values.", modId, event.getClass().getSimpleName());
+                Constants.LOG.debug("NeoForge config event for {}: {}, syncing values.", modId, event.getClass().getSimpleName());
                 ConfigHolder holder = modIdToHolderMap.get(modId);
                 if (holder != null) {
                     syncValuesFromForge(holder);
