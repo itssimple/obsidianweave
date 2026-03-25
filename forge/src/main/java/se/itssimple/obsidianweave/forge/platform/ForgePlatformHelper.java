@@ -66,7 +66,7 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
 
         ForgeConfigSpec spec = specBuilder.build();
         modIdToSpecMap.put(holder.getModId(), spec);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, spec, holder.getModId() + "-common.toml");
+        ModForge.instance.loadingContext.registerConfig(ModConfig.Type.COMMON, spec, holder.getModId() + "-common.toml");
         if(ModCommon.CONFIG_DEBUG_LOGGING) {
             Constants.LOG.info("Config loaded for mod {}", holder.getModId());
         }

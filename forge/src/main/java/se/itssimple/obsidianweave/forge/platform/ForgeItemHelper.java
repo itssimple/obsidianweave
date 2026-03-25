@@ -1,7 +1,7 @@
 package se.itssimple.obsidianweave.forge.platform;
 
 import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import se.itssimple.obsidianweave.platform.IPlatformItemHelper;
@@ -42,7 +42,7 @@ public class ForgeItemHelper implements IPlatformItemHelper {
      * Registers all items with the given event bus.
      * @param eventBus The Forge event bus.
      */
-    public void register(IEventBus eventBus)
+    public void register(BusGroup eventBus)
     {
         this.deferredRegister.register(eventBus);
     }

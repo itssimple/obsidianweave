@@ -3,8 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
 
-        maven { url = 'https://maven.parchmentmc.org' }
-
         exclusiveContent {
             forRepository {
                 maven {
@@ -13,8 +11,7 @@ pluginManagement {
                 }
             }
             filter {
-                includeGroup('net.fabricmc')
-                includeGroup('fabric-loom')
+                includeGroupAndSubgroups('net.fabricmc')
             }
         }
 
@@ -28,21 +25,6 @@ pluginManagement {
             filter {
                 includeGroupAndSubgroups("org.spongepowered")
             }
-        }
-
-        maven {
-            name = 'Quilt (Release)'
-            url = 'https://maven.quiltmc.org/repository/release'
-        }
-
-        maven {
-            name = 'Quilt (Snapshot)'
-            url = 'https://maven.quiltmc.org/repository/snapshot'
-        }
-
-        maven {
-            name = 'Cotton'
-            url = 'https://server.bbkr.space/artifactory/libs-release/'
         }
 
         exclusiveContent {
@@ -63,8 +45,8 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
-rootProject.name = 'Obsidian-Weave-1.21.1'
-include("common")
-include("fabric")
-include("forge")
+rootProject.name = 'Obsidian-Weave-26.1'
+include 'common'
+include 'fabric'
+include 'forge'
 include 'neoforge'

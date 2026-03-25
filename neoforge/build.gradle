@@ -10,10 +10,7 @@ neoForge {
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
+
     runs {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
@@ -21,9 +18,11 @@ neoForge {
         }
         client {
             client()
+            gameDirectory = this.mkdir(this.file("runs/client"))
         }
         data {
-            data()
+            clientData()
+            gameDirectory = this.mkdir(this.file("runs/data"))
 
             // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
@@ -31,6 +30,7 @@ neoForge {
         }
         server {
             server()
+            this.file("runs/server").createParentDirectories()
         }
     }
     mods {

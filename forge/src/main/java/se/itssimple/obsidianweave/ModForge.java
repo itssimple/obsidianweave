@@ -1,12 +1,12 @@
 package se.itssimple.obsidianweave;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.fml.event.IModBusEvent;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import se.itssimple.obsidianweave.forge.platform.ForgeItemHelper;
 import se.itssimple.obsidianweave.forge.platform.ForgePlatformHelper;
-import se.itssimple.obsidianweave.services.Services;
 import se.itssimple.obsidianweave.util.Reference;
 import net.minecraftforge.fml.common.Mod;
 
@@ -17,13 +17,18 @@ import net.minecraftforge.fml.common.Mod;
 @Mod(Reference.MOD_ID)
 public class ModForge {
 
+    public static ModForge instance;
+    public FMLJavaModLoadingContext loadingContext;
+
     /**
      * Constructs the Forge mod and registers event listeners.
      */
-    public ModForge() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(this::loadComplete);
-        eventBus.addListener(ForgePlatformHelper::onModConfigEvent);
+    public ModForge(FMLJavaModLoadingContext modLoadingContext) {
+        instance = this;
+        loadingContext = modLoadingContext;
+        BusGroup eventBus = modLoadingContext.getModBusGroup();
+        FMLLoadCompleteEvent.getBus(eventBus).addListener(this::loadComplete);
+        IModBusEvent.getBus(eventBus, ModConfigEvent.class).addListener(ForgePlatformHelper::onModConfigEvent);
     }
 
     /**
