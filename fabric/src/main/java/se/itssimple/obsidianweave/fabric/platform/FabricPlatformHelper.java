@@ -134,7 +134,7 @@ public class FabricPlatformHelper implements IPlatformConfigHelper {
         JsonObject json = new JsonObject();
 
         for (ConfigEntry<?> entry : holder.getAllEntries()) {
-            json.add("_comment_" + entry.getKey(), new JsonPrimitive("# " + I18n.get(entry.getCommentLangKey())));
+            json.add("_comment_" + entry.getKey(), new JsonPrimitive("# " + entry.getCommentLangKey()));
             json.add("_type_" + entry.getKey(), new JsonPrimitive("# " + entry.getType()));
 
             Object value = entry.getInternalCachedValue();
