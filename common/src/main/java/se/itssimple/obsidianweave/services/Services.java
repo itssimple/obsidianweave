@@ -2,6 +2,7 @@ package se.itssimple.obsidianweave.services;
 
 import se.itssimple.obsidianweave.platform.IPlatformConfigHelper;
 import se.itssimple.obsidianweave.platform.IPlatformItemHelper;
+import se.itssimple.obsidianweave.platform.IPlatformNetworkHelper;
 
 import java.util.ServiceLoader;
 
@@ -18,6 +19,10 @@ public class Services {
      * The platform item helper loaded for the current environment.
      */
     public final static IPlatformItemHelper ITEMHELPER = load(IPlatformItemHelper.class);
+    /**
+     * The platform network helper loaded for the current environment.
+     */
+    public final static IPlatformNetworkHelper NETWORK = load(IPlatformNetworkHelper.class);
 
     /**
      * Loads a service implementation for the given class.
