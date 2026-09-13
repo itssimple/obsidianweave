@@ -1,5 +1,8 @@
 package se.itssimple.obsidianweave.neoforge.platform;
 
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -64,9 +67,22 @@ public class NeoForgePlatformHelper implements IPlatformConfigHelper {
 
         ModConfigSpec spec = specBuilder.build();
         modIdToSpecMap.put(holder.getModId(), spec);
-        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, spec, holder.getModId() + "-common.toml");
+
+        // The config must belong to the mod that owns it: NeoForge posts ModConfigEvent on the owning mod's bus,
+        // so the value sync has to listen there, not on Obsidian Weave's. Resolve the container by id rather than
+        // trusting the active container, so this also works when called outside the mod's own constructor.
+        ModContainer container = ModList.get().getModContainerById(holder.getModId())
+                .map(c -> (ModContainer) c)
+                .orElseGet(() -> ModLoadingContext.get().getActiveContainer());
+        container.registerConfig(ModConfig.Type.COMMON, spec, holder.getModId() + "-common.toml");
+        IEventBus bus = container.getEventBus();
+        if (bus != null) {
+            bus.addListener(NeoForgePlatformHelper::onModConfigEvent);
+        } else {
+            Constants.LOG.warn("Mod {} has no event bus; its config values will stay at their defaults", holder.getModId());
+        }
         if(ModCommon.CONFIG_DEBUG_LOGGING) {
-            Constants.LOG.info("Config loaded for mod {}", holder.getModId());
+            Constants.LOG.info("Config registered for mod {}", holder.getModId());
         }
     }
 
@@ -107,9 +123,12 @@ public class NeoForgePlatformHelper implements IPlatformConfigHelper {
     @Override
     public void save(ConfigHolder holder) {
         ModConfigSpec spec = modIdToSpecMap.get(holder.getModId());
-        if(spec != null && spec.isLoaded()) {
-            // Forge handles this automatically
+        if (spec != null && !spec.isLoaded()) {
+            // Common configs are read once, right after registry initialisation. Anything registered later is never
+            // loaded from disk, never written, and silently keeps its defaults.
+            Constants.LOG.warn("Config for mod {} was never loaded from disk; on NeoForge, registerConfig must run from the mod constructor", holder.getModId());
         }
+        // Otherwise NeoForge writes the file itself.
     }
 
     /**

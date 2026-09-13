@@ -4,7 +4,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -14,7 +13,6 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.minecraft.server.level.ServerPlayer;
 import se.itssimple.obsidianweave.event.ModEvents;
 import se.itssimple.obsidianweave.neoforge.platform.NeoForgeNetworkHelper;
-import se.itssimple.obsidianweave.neoforge.platform.NeoForgePlatformHelper;
 import se.itssimple.obsidianweave.util.Reference;
 
 /**
@@ -30,17 +28,11 @@ public class ModNeoForge {
      * @param modContainer The mod container.
      */
     public ModNeoForge(IEventBus eventBus, ModContainer modContainer) {
-        eventBus.addListener(this::loadComplete);
-        eventBus.addListener(NeoForgePlatformHelper::onModConfigEvent);
+        // Config registration listens on each owning mod's bus from NeoForgePlatformHelper.register.
         eventBus.addListener(NeoForgeNetworkHelper::onRegisterPayloadHandlers);
         NeoForge.EVENT_BUS.register(this);
-    }
-
-    /**
-     * Called when NeoForge has completed loading mods.
-     * @param event The load complete event.
-     */
-    private void loadComplete(final FMLLoadCompleteEvent event) {
+        // From the constructor, not load-complete: common configs are read before common setup, so anything
+        // registered later keeps its defaults. Mods using Obsidian Weave should do the same.
         ModCommon.init();
     }
 

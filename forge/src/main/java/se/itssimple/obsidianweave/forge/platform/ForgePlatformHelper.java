@@ -1,11 +1,15 @@
 package se.itssimple.obsidianweave.forge.platform;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.ModLoadingStage;
+import net.minecraftforge.fml.event.IModBusEvent;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import se.itssimple.obsidianweave.ModCommon;
-import se.itssimple.obsidianweave.ModForge;
 import se.itssimple.obsidianweave.data.ConfigEntry;
 import se.itssimple.obsidianweave.data.ConfigHolder;
 import se.itssimple.obsidianweave.data.Constants;
@@ -66,9 +70,27 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
 
         ForgeConfigSpec spec = specBuilder.build();
         modIdToSpecMap.put(holder.getModId(), spec);
-        ModForge.instance.loadingContext.registerConfig(ModConfig.Type.COMMON, spec, holder.getModId() + "-common.toml");
+
+        // The config must belong to the mod that owns it: Forge dispatches ModConfigEvent to the owning mod's bus
+        // group, so the value sync has to listen there, not on Obsidian Weave's.
+        ModContainer container = ModList.getModContainerById(holder.getModId())
+                .map(c -> (ModContainer) c)
+                .orElseGet(() -> ModLoadingContext.get().getContainer());
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, spec, container, holder.getModId() + "-common.toml"));
+        BusGroup busGroup = container.getModBusGroup();
+        if (busGroup != null) {
+            IModBusEvent.getBus(busGroup, ModConfigEvent.class).addListener(ForgePlatformHelper::onModConfigEvent);
+        } else {
+            Constants.LOG.warn("Mod {} has no mod bus group; its config values will stay at their defaults", holder.getModId());
+        }
+        if (container.getCurrentState() != ModLoadingStage.CONSTRUCT) {
+            // Common configs are read in the CONFIG_LOAD state, right after construction. Anything registered
+            // later is never loaded from disk, never written, and silently keeps its defaults.
+            Constants.LOG.warn("Config for mod {} was registered in loading stage {}; on Forge, registerConfig must run from the mod constructor to be read from disk",
+                    holder.getModId(), container.getCurrentState());
+        }
         if(ModCommon.CONFIG_DEBUG_LOGGING) {
-            Constants.LOG.info("Config loaded for mod {}", holder.getModId());
+            Constants.LOG.info("Config registered for mod {}", holder.getModId());
         }
     }
 
@@ -109,9 +131,10 @@ public class ForgePlatformHelper implements IPlatformConfigHelper {
     @Override
     public void save(ConfigHolder holder) {
         ForgeConfigSpec spec = modIdToSpecMap.get(holder.getModId());
-        if(spec != null && spec.isLoaded()) {
-            // Forge handles this automatically
+        if (spec != null && !spec.isLoaded()) {
+            Constants.LOG.warn("Config for mod {} was never loaded from disk; on Forge, registerConfig must run from the mod constructor", holder.getModId());
         }
+        // Otherwise Forge writes the file itself.
     }
 
     /**

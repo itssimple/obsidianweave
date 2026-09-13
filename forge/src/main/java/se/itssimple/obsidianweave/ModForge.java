@@ -6,14 +6,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.bus.BusGroup;
-import net.minecraftforge.fml.event.IModBusEvent;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import se.itssimple.obsidianweave.event.ModEvents;
 import se.itssimple.obsidianweave.forge.platform.ForgeNetworkHelper;
-import se.itssimple.obsidianweave.forge.platform.ForgePlatformHelper;
 import se.itssimple.obsidianweave.util.Reference;
 import net.minecraftforge.fml.common.Mod;
 
@@ -36,11 +31,11 @@ public class ModForge {
     public ModForge(FMLJavaModLoadingContext modLoadingContext) {
         instance = this;
         loadingContext = modLoadingContext;
-        BusGroup eventBus = modLoadingContext.getModBusGroup();
-        FMLLoadCompleteEvent.getBus(eventBus).addListener(this::loadComplete);
-        IModBusEvent.getBus(eventBus, ModConfigEvent.class).addListener(ForgePlatformHelper::onModConfigEvent);
-
+        // Config registration listens on each owning mod's bus group from ForgePlatformHelper.register.
         ForgeNetworkHelper.init();
+        // From the constructor, not load-complete: common configs are read in CONFIG_LOAD, right after
+        // construction, so anything registered later keeps its defaults. Mods using Obsidian Weave should do the same.
+        ModCommon.init();
 
         ServerStartedEvent.BUS.addListener(event -> ModEvents.SERVER_STARTED.fire(l -> l.accept(event.getServer())));
         ServerStoppingEvent.BUS.addListener(event -> {
@@ -63,13 +58,5 @@ public class ModForge {
         });
         RegisterCommandsEvent.BUS.addListener(event ->
                 ModEvents.REGISTER_COMMANDS.fire(l -> l.register(event.getDispatcher(), event.getBuildContext(), event.getCommandSelection())));
-    }
-
-    /**
-     * Called when Forge has completed loading mods.
-     * @param event The load complete event.
-     */
-    private void loadComplete(final FMLLoadCompleteEvent event) {
-        ModCommon.init();
     }
 }
