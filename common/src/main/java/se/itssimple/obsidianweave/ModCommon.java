@@ -4,6 +4,7 @@ import se.itssimple.obsidianweave.data.ConfigBuilder;
 import se.itssimple.obsidianweave.data.ConfigEntry;
 import se.itssimple.obsidianweave.data.ConfigHolder;
 import se.itssimple.obsidianweave.data.Constants;
+import se.itssimple.obsidianweave.event.ModEvents;
 import se.itssimple.obsidianweave.platform.IPlatformConfigHelper;
 import se.itssimple.obsidianweave.services.Services;
 import se.itssimple.obsidianweave.util.Reference;
@@ -34,6 +35,10 @@ public class ModCommon {
      */
     public static void init() {
         Constants.LOG.info("Loading {} (ID: {}), version {}", Reference.NAME, Reference.MOD_ID, Reference.VERSION);
+        ModEvents.SERVER_STARTED.register(server ->
+                Constants.LOG.info("Server started on {}, lifecycle events active", server.getServerModName()));
+        ModEvents.DATAPACK_SYNC.register((server, player) ->
+                Constants.LOG.info("Datapack sync ({})", player == null ? "reload" : player.getGameProfile().name()));
     }
 
     /**
