@@ -74,7 +74,7 @@ public class NeoForgePlatformHelper implements IPlatformConfigHelper {
         ModContainer container = ModList.get().getModContainerById(holder.getModId())
                 .map(c -> (ModContainer) c)
                 .orElseGet(() -> ModLoadingContext.get().getActiveContainer());
-        container.registerConfig(ModConfig.Type.COMMON, spec, holder.getModId() + "-common.toml");
+        container.registerConfig(ModConfig.Type.LOCAL, spec, holder.getModId() + "-common.toml");
         IEventBus bus = container.getEventBus();
         if (bus != null) {
             bus.addListener(NeoForgePlatformHelper::onModConfigEvent);
